@@ -1,47 +1,23 @@
 import requests
 import sys
+from termcolor import colored
+import warnings
 
-url = sys.argv[1]
+warnings.filterwarnings('ignore') 
+url = sys.argv[1] 
+
 try:
     g = requests.get(url)
 except:
     print('ssl error but we still check:)')
     g = requests.get(url, verify=False)
-
+	
 website = g.headers
-def xframe():
-	if 'X-Frame-Options' in website:
-		print('X frame option is declared\n')
-	else:
-		print('No x frame option declared\n')
 
-def content_policy():
-	if 'Content-Security-Policy' in website:
-		print('Content security is enabled\n')
-	else:
-		print('No content security headers found\n')
-
-def strict():
-	if 'Strict-Transport-Security' in website:
-		print('Transport security is enabled\n')
-	else:
-		print('No transport security headers found, HSTS\n')
-
-def xxs_protection():
-	if 'X-XSS-Protection' in website:
-		print('xxs protection is enabled\n')
-	else:
-		print('No xss protection headers found\n')
-def x_content_type_options():
-    if 'X-Content-Type-Options' in website:
-        print('X-content-Type-Options is there\n')
+options = ["X-Frame-Options", "Content-Security-Policy", "Strict-Transport-Security", "X-XSS-Protection", "X-Content-Type-Options"]
+for new in options:
+    if new in website:
+        print(colored('%s is present.\n'%new, 'green'))
     else:
-        print('X-content-Type-Options not found\n')
-
-print('here u go :) \n')
-xframe()
-content_policy()
-strict()
-xxs_protection()
-x_content_type_options()
+        print(colored('%s is not present.\n'%new, 'red'))
 
